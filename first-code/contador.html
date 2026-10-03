@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Contador</title>
+  <style>
+    body {
+      background-color: #ffb6c1;
+      color: #333333;
+    }
+  </style>
+</head>
+<body>
+  <p id="valor">0</p>
+  <button onclick="cambiar(-1)">-</button>
+  <button onclick="cambiar(1)">+</button>
+  <button onclick="reiniciar()">Reiniciar</button>
+
+  <script>
+    let cuenta = 0;
+
+    function cambiar(n) {
+      cuenta += n;
+      document.getElementById('valor').textContent = cuenta;
+    }
+
+    function reiniciar() {
+      cuenta = 0;
+      document.getElementById('valor').textContent = cuenta;
+    }
+  </script>
+</body>
+</html>

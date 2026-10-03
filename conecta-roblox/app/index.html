@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="es" data-lang="esp">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CONECTA — cuadernillo bilingüe</title>
+<style>
+/* ============================================================
+   CONECTA — fichero de palabras
+   Concepto: un fichero de biblioteca. El abecedario son pestañas
+   de cartulina que se conectan con la ficha; los idiomas son sellos.
+   Tipografías del sistema: Bahnschrift (rótulos), Ink Free (mano),
+   Segoe UI (palabras), Consolas (cifras).
+   ============================================================ */
+:root{
+  --papel:#f7f4ea;      --papel-2:#efe9d9;   --ficha:#fffdf6;    --ficha-2:#f9f4e6;
+  --tinta:#1b2430;      --tinta-2:#54637a;   --tinta-3:#93a1b3;
+  --renglon:#d3e0ee;    --canto:#cdc2a8;     --canto-2:#e3dac6;
+  --lapiz:#d2352a;      --oro:#a8862c;
+  --sello-es:#b3242b;   --sello-en:#1b4f8f;  --sello-mx:#0e7a4b;
+  --sombra:0 1px 0 rgba(90,72,40,.10), 0 2px 5px rgba(90,72,40,.06);
+  --sombra-alta:0 26px 70px rgba(40,30,12,.34);
+  --grano:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+  --r1:6px; --r2:10px; --r3:14px;
+}
+html.dark{
+  --papel:#12161c;      --papel-2:#0d1116;   --ficha:#1a2029;    --ficha-2:#151b23;
+  --tinta:#e9e4d6;      --tinta-2:#9aa7b8;   --tinta-3:#66727f;
+  --renglon:#242e3a;    --canto:#2c3542;     --canto-2:#222a34;
+  --lapiz:#ff6a5c;      --oro:#d9b45c;
+  --sello-es:#e8635f;   --sello-en:#68a8e8;  --sello-mx:#3fb87a;
+  --sombra:0 1px 0 rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.3);
+  --sombra-alta:0 28px 80px rgba(0,0,0,.72);
+}
+html[data-lang="esp"]{ --acento:var(--sello-es); }
+html[data-lang="en"] { --acento:var(--sello-en); }
+html[data-lang="mx"] { --acento:var(--sello-mx); }
+html[data-lang="pauli"]{ --acento:#c2185b; }
+html.dark[data-lang="pauli"]{ --acento:#ff7ab0; }
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font:14px/1.45 "Segoe UI",system-ui,-apple-system,sans-serif;color:var(--tinta);
+  background:var(--papel-2);background-image:var(--grano);
+  display:flex;flex-direction:column;height:100vh;overflow:hidden;-webkit-font-smoothing:antialiased;
+}
+button,select,input,textarea{font:inherit;color:inherit}
+::selection{background:color-mix(in srgb,var(--acento) 26%,transparent)}
+:focus-visible{outline:2.5px solid var(--acento);outline-offset:2px}
+.hand{font-family:"Ink Free","Segoe Script","Bradley Hand",cursive}
+.rotulo{font-family:"Bahnschrift","Segoe UI",sans-serif;font-stretch:condensed;
+        letter-spacing:.09em;text-transform:uppercase;font-weight:700}
+.cifra{font-family:Consolas,"Courier New",monospace;font-variant-numeric:tabular-nums}
+.grow{flex:1}
+
+/* ─────────── cabecera ─────────── */
+.top{
+  flex:0 0 auto;position:relative;z-index:6;
+  background:linear-gradient(180deg,var(--papel) 0%,var(--papel-2) 100%);
+  border-bottom:1px solid var(--canto);
+}
+.top::after{ /* costura del canto superior */
+  content:"";position:absolute;left:0;right:0;top:0;height:3px;
+  background:repeating-linear-gradient(90deg,var(--canto) 0 7px,transparent 7px 14px);opacity:.45;
+}
+.langbar{display:flex;align-items:center;gap:8px;padding:8px 16px 4px;flex-wrap:wrap;row-gap:7px}
+
+/* ─────────── sellos de idioma (firma nº2) ─────────── */
+.langs{display:flex;gap:7px;flex:0 0 auto}
+.lang{
+  position:relative;cursor:pointer;padding:6px 13px 7px;display:flex;align-items:center;gap:10px;
+  background:transparent;border:2px solid var(--canto);border-radius:var(--r1);
+  opacity:.42;filter:grayscale(.8);transition:opacity .18s,filter .18s,transform .18s,border-color .18s,background .18s;
+}
+.lang::before{ /* rulo interior del sello */
+  content:"";position:absolute;inset:2px;border:1px solid currentColor;border-radius:3px;opacity:.28;
+  pointer-events:none;
+}
+.lang:hover{opacity:.75;filter:grayscale(.15)}
+.lang.on{
+  opacity:1;filter:none;color:var(--sello);border-color:var(--sello);background:var(--ficha);
+  transform:rotate(-.7deg);box-shadow:0 3px 0 color-mix(in srgb,var(--sello) 22%,transparent);
+}
+.lang .flag{width:36px;height:24px;flex:0 0 auto;border-radius:2px;overflow:hidden;
+  box-shadow:0 0 0 1px rgba(0,0,0,.18) inset,0 1px 2px rgba(0,0,0,.25);display:block}
+.lang .flag svg{display:block;width:100%;height:100%}
+.lang .txt{display:flex;flex-direction:column;align-items:flex-start;gap:2px;line-height:1}
+.lang b{font-family:"Bahnschrift","Segoe UI",sans-serif;font-stretch:condensed;
+        font-size:25px;font-weight:700;letter-spacing:.02em;line-height:.94}
+.lang.on b{color:var(--sello)}
+.lang i{font-style:normal;font-size:9px;letter-spacing:.14em;color:var(--tinta-3);font-weight:700;
+  font-family:Consolas,monospace;font-variant-numeric:tabular-nums}
+.lang[data-lang="esp"]{--sello:var(--sello-es)}
+.lang[data-lang="en"] {--sello:var(--sello-en)}
+.lang[data-lang="mx"] {--sello:var(--sello-mx)}
+.lang[data-lang="pauli"]{--sello:#c2185b}
+html.dark .lang[data-lang="pauli"]{--sello:#ff7ab0}
+@media(max-width:1300px){.lang b{font-size:19px}.lang .flag{width:28px;height:19px}.lang{padding:5px 9px}}
+
+/* ─────────── marcadores y botones ─────────── */
+.stat{display:flex;flex-direction:column;align-items:center;line-height:1.05;padding:0 9px}
+.stat b{font:700 20px/1 Consolas,monospace;font-variant-numeric:tabular-nums}
+.stat i{font-style:normal;font-size:8.5px;letter-spacing:.13em;color:var(--tinta-3);
+  text-transform:uppercase;font-weight:800;margin-top:3px;font-family:"Bahnschrift","Segoe UI",sans-serif}
+.stat.a b{color:var(--acento)} .stat.p b{color:var(--lapiz)}
+.sep{width:1px;height:28px;background:var(--canto);opacity:.7}
+
+.tbtn{
+  display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:36px;
+  padding:8px 10px;border-radius:var(--r1);cursor:pointer;font-size:13px;
+  border:1px solid var(--canto);background:var(--ficha);box-shadow:var(--sombra);
+  transition:transform .12s,background .14s,border-color .14s,color .14s;
+}
+.tbtn:hover{transform:translateY(-1px);border-color:var(--acento);color:var(--acento)}
+.tbtn:active{transform:translateY(0)}
+.tbtn.on{background:var(--acento);border-color:var(--acento);color:#fff;box-shadow:none}
+.tbtn.warn.on{background:var(--lapiz);border-color:var(--lapiz)}
+select.tbtn{padding:8px 7px;-webkit-appearance:none;appearance:none;text-align:center;
+  font-family:"Bahnschrift","Segoe UI",sans-serif;font-stretch:condensed;letter-spacing:.04em}
+
+/* cronómetro */
+.timer{position:relative;width:46px;height:46px;cursor:pointer;flex:0 0 auto}
+.timer svg{transform:rotate(-90deg);display:block}
+.timer .bg{stroke:var(--canto-2)}
+.timer .fg{stroke:var(--acento);transition:stroke .3s}
+.timer.low .fg{stroke:var(--lapiz)}
+.timer b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font:700 15px/1 Consolas,monospace}
+.timer.off{opacity:.28}
+.timer.low b{color:var(--lapiz)}
+
+/* ─────────── buscador ─────────── */
+.searchrow{display:flex;gap:8px;align-items:stretch;padding:4px 16px 0}
+.sbox{
+  flex:1;display:flex;align-items:center;background:var(--ficha);
+  border:2px solid var(--canto);border-radius:var(--r3);box-shadow:var(--sombra);
+  transition:border-color .15s,box-shadow .15s;position:relative;overflow:hidden;
+}
+.sbox::before{ /* filo de tinta a la izquierda */
+  content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--acento);opacity:.85;
+}
+.sbox:focus-within{border-color:var(--acento);box-shadow:0 0 0 4px color-mix(in srgb,var(--acento) 15%,transparent)}
+.sbox>svg{margin-left:16px;opacity:.42;flex:0 0 auto}
+#q{flex:1;border:0;outline:0;background:transparent;padding:10px 10px;
+   font:600 25px/1 "Segoe UI",system-ui,sans-serif;letter-spacing:-.01em}
+#q::placeholder{color:var(--tinta-3);font-weight:400;font-size:17px;letter-spacing:0}
+.badge{
+  margin-right:11px;padding:5px 10px;border-radius:var(--r1);font-size:11px;white-space:nowrap;
+  background:color-mix(in srgb,var(--acento) 14%,transparent);color:var(--acento);display:none;
+  font-family:"Bahnschrift","Segoe UI",sans-serif;font-stretch:condensed;letter-spacing:.08em;
+  text-transform:uppercase;font-weight:700;
+}
+.badge.show{display:block}
+.seg{display:flex;background:var(--ficha);border:1px solid var(--canto);border-radius:var(--r3);
+     padding:4px;gap:3px;box-shadow:var(--sombra)}
+.seg button{
+  border:0;background:transparent;padding:0 14px;border-radius:var(--r2);cursor:pointer;
+  font-family:"Bahnschrift","Segoe UI",sans-serif;font-stretch:condensed;
+  font-size:12.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--tinta-2);transition:.14s;
+}
+.seg button:hover{color:var(--tinta)}
+.seg button.on{background:var(--acento);color:#fff}
+.seg button kbd{display:block;font:400 8px/1 Consolas,monospace;opacity:.6;margin-top:3px;
+  background:none;border:0;padding:0;color:inherit}
+
+/* ─────────── pestañas del fichero (firma) ─────────── */
+.abc{display:block;padding:6px 14px 0;line-height:0;position:relative;margin-bottom:-1px;z-index:3}
+.ltr{
+  display:inline-block;vertical-align:bottom;margin:0 1.5px;position:relative;
+  min-width:38px;height:44px;padding:5px 4px 0;text-align:center;white-space:nowrap;cursor:pointer;
+  background:linear-gradient(180deg,var(--ficha-2),var(--papel));
+  border:1px solid var(--canto);border-bottom:1px solid var(--canto);
+  border-radius:var(--r2) var(--r2) 0 0;color:var(--tinta-2);user-select:none;
+  transition:transform .14s,background .14s,color .14s,border-color .14s;
+}
+.ltr::before{ /* muesca de cartulina */
+  content:"";position:absolute;left:7px;right:7px;top:3px;height:2px;border-radius:2px;
+  background:var(--canto);opacity:.5;
+}
+.ltr:hover{color:var(--tinta);transform:translateY(-2px);border-color:var(--acento)}
+.ltr.on{
+  background:var(--ficha);border-color:var(--canto);border-bottom-color:var(--ficha);
+  color:var(--acento);transform:translateY(1px);height:46px;
+  box-shadow:0 -3px 0 var(--acento) inset;
+}
+.ltr.on::before{background:var(--acento);opacity:1}
+.ltr b{display:block;font:800 17px/19px "Bahnschrift","Segoe UI",sans-serif;font-stretch:condensed;
+  letter-spacing:.03em;margin-top:3px}
+.ltr em{display:block;font-style:normal;font:700 9.5px/12px Consolas,monospace;color:var(--tinta-3);margin-top:1px}
+.ltr.on em{color:var(--acento);opacity:.85}
+.ltr.off{opacity:.32}
+.ltr.all{min-width:58px}
+.ltr.all b{font-size:10.5px;letter-spacing:.1em;line-height:19px}
+.ltr.sp b{font-size:12px}
+.ltr.sp{min-width:42px}
+.abcsep{display:inline-block;vertical-align:bottom;width:1px;height:26px;background:var(--canto);
+  margin:0 6px 8px;opacity:.7}
+
+/* ─────────── la ficha ─────────── */
+.sheetwrap{flex:1;min-height:0;display:flex;background:var(--ficha);border-top:1px solid var(--canto);
+  position:relative;z-index:1}
+.spiral{
+  flex:0 0 34px;position:relative;
+  background:
+    radial-gradient(circle at 17px 22px, var(--papel-2) 0 5px, transparent 6px),
+    linear-gradient(90deg,transparent 0 33px,color-mix(in srgb,var(--lapiz) 45%,transparent) 33px 34px);
+  background-size:44px 44px,100% 100%;background-repeat:repeat-y,no-repeat;
+}
+main{
+  flex:1;min-width:0;overflow-y:auto;overflow-x:hidden;padding:16px 20px 26px 22px;
+  background-image:repeating-linear-gradient(transparent 0 38px,var(--renglon) 38px 38.9px),var(--grano);
+  background-position:0 14px,0 0;
+}
+main::-webkit-scrollbar{width:13px}
+main::-webkit-scrollbar-track{background:transparent}
+main::-webkit-scrollbar-thumb{background:var(--canto);border-radius:9px;border:4px solid transparent;background-clip:content-box}
+main::-webkit-scrollbar-thumb:hover{background:var(--tinta-3);background-clip:content-box}
+
+.group{margin-bottom:24px}
+.ghead{
+  position:sticky;top:-16px;z-index:2;display:flex;align-items:baseline;gap:12px;
+  padding:9px 0 5px;margin-bottom:10px;
+  background:linear-gradient(var(--ficha) 76%,transparent);
+  border-bottom:2px solid var(--acento);
+}
+.ghead h2{font-size:24px;font-weight:400;color:var(--acento);line-height:1}
+.ghead .cnt{font:800 9.5px/1 "Bahnschrift","Segoe UI",sans-serif;font-stretch:condensed;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--tinta-3)}
+.words{display:flex;flex-wrap:wrap;gap:6px}
+
+/* palabra */
+.w{
+  position:relative;display:inline-flex;align-items:baseline;gap:8px;
+  padding:7px 11px;border-radius:var(--r2);background:var(--ficha-2);
+  border:1px solid var(--canto-2);cursor:pointer;user-select:none;
+  transition:transform .09s,border-color .12s,background .12s,box-shadow .12s;
+}
+.w:hover{border-color:var(--acento);background:var(--ficha);transform:translateY(-1.5px);
+  box-shadow:0 3px 8px color-mix(in srgb,var(--acento) 16%,transparent)}
+.w.sel{border-color:var(--acento);box-shadow:0 0 0 2px var(--acento) inset}
+.w .t{position:relative;font-size:16.5px;line-height:1.15;letter-spacing:-.005em}
+.w em{font-style:normal;font-size:11px;color:var(--tinta-3);max-width:170px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.w mark{background:transparent;color:var(--acento);font-weight:700;
+  box-shadow:inset 0 -.42em 0 color-mix(in srgb,var(--acento) 16%,transparent)}
+.w.fav{border-color:var(--oro);background:color-mix(in srgb,var(--oro) 11%,var(--ficha))}
+.w.fav::before{content:"★";position:absolute;top:-7px;right:-3px;font-size:11px;color:var(--oro)}
+
+/* tachado: trazo de lápiz rojo que se dibuja */
+.w.done{opacity:.46;background:transparent;border-color:transparent;transform:rotate(-.5deg)}
+.w.done:hover{transform:rotate(-.5deg);box-shadow:none;background:transparent}
+.w.done::before{display:none}
+.w.done .t::after{
+  content:"";position:absolute;left:-3px;top:54%;height:2.5px;width:0;border-radius:2px;
+  background:var(--lapiz);animation:tachar .22s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes tachar{to{width:calc(100% + 6px)}}
+.w.done em{text-decoration:line-through;text-decoration-color:var(--lapiz)}
+.w.done mark{color:inherit;box-shadow:none;font-weight:400}
+.w .x{
+  display:none;width:20px;height:20px;flex:0 0 auto;padding:0;align-self:center;
+  border:1.5px solid var(--lapiz);color:var(--lapiz);background:transparent;border-radius:50%;
+  font:700 12px/1 "Segoe UI",sans-serif;cursor:pointer;align-items:center;justify-content:center;
+  transition:background .12s,color .12s;
+}
+.w.done .x{display:inline-flex}
+.w .x:hover{background:var(--lapiz);color:#fff}
+
+.donesep{
+  flex:0 0 100%;display:flex;align-items:center;gap:10px;margin:14px 0 3px;
+  font:800 9px/1 "Bahnschrift","Segoe UI",sans-serif;font-stretch:condensed;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--lapiz);opacity:.65;
+}
+.donesep::after{content:"";flex:1;height:1px;background:repeating-linear-gradient(90deg,var(--lapiz) 0 4px,transparent 4px 9px);opacity:.5}
+.more{margin-top:12px;font-size:12.5px;color:var(--tinta-3)}
+.more button{border:0;background:transparent;color:var(--acento);cursor:pointer;
+  text-decoration:underline;text-underline-offset:3px;font-weight:700}
+.empty{text-align:center;padding:64px 0;color:var(--tinta-3);font-size:15px}
+.empty b{color:var(--tinta);font-size:26px;display:block;margin-bottom:8px;font-weight:400;
+  font-family:"Ink Free","Segoe Script",cursive}
+
+/* ─────────── pie ─────────── */
+.bottom{
+  flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:7px 16px;
+  border-top:1px solid var(--canto);background:var(--papel-2);
+  font-size:10.5px;color:var(--tinta-3);
+}
+kbd{font:700 9.5px/1 Consolas,monospace;background:var(--ficha);border:1px solid var(--canto);
+  border-bottom-width:2px;border-radius:4px;padding:2px 5px;margin:0 1px;color:var(--tinta-2)}
+
+/* ─────────── historial ─────────── */
+.drawer{
+  position:fixed;top:0;right:0;bottom:0;width:300px;background:var(--ficha);z-index:20;
+  border-left:2px solid var(--canto);box-shadow:var(--sombra-alta);
+  display:none;flex-direction:column;
+}
+.drawer.open{display:flex;animation:entrar .24s cubic-bezier(.3,.8,.35,1) both}
+@keyframes entrar{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.dhead{padding:14px 16px;border-bottom:1px solid var(--canto);display:flex;align-items:center;gap:8px;
+  background:linear-gradient(180deg,var(--papel),var(--ficha))}
+.dhead h3{font-size:22px;font-weight:400;flex:1}
+.dlist{flex:1;overflow-y:auto;padding:8px 10px}
+.hitem{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:var(--r1);font-size:14px}
+.hitem:hover{background:var(--ficha-2)}
+.hitem span{flex:1;text-decoration:line-through;text-decoration-color:var(--lapiz);color:var(--tinta-2)}
+.hitem i{font-style:normal;font:700 10px/1 Consolas,monospace;color:var(--tinta-3);min-width:18px}
+.hitem button{border:1.5px solid var(--lapiz);color:var(--lapiz);background:transparent;border-radius:50%;
+  width:20px;height:20px;font:700 12px/1 sans-serif;cursor:pointer}
+.hitem button:hover{background:var(--lapiz);color:#fff}
+
+/* ─────────── panel administrar ─────────── */
+.mask{position:fixed;inset:0;background:rgba(24,18,6,.58);backdrop-filter:blur(5px);z-index:30;
+  display:none;align-items:center;justify-content:center;padding:24px}
+.mask.open{display:flex;animation:aparecer .16s ease-out}
+@keyframes aparecer{from{opacity:0}to{opacity:1}}
+.modal{width:min(1100px,100%);height:min(720px,100%);background:var(--papel);border-radius:var(--r3);
+  box-shadow:var(--sombra-alta);display:flex;flex-direction:column;overflow:hidden;
+  border:2px solid var(--canto)}
+.mhead{display:flex;align-items:center;gap:9px;padding:14px 17px;border-bottom:1px solid var(--canto);
+  background:linear-gradient(180deg,var(--ficha),var(--papel))}
+.mhead h2{font-size:27px;font-weight:400;flex:1}
+.mbody{flex:1;display:flex;min-height:0}
+.mside{width:224px;flex:0 0 auto;border-right:1px solid var(--canto);overflow-y:auto;padding:9px;
+  background:var(--papel-2)}
+.mside h5{font:800 8.5px/1 "Bahnschrift","Segoe UI",sans-serif;font-stretch:condensed;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--tinta-3);padding:11px 9px 5px}
+.mside .li{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--r1);cursor:pointer;
+  font-size:12.5px;margin-bottom:2px;border:1px solid transparent}
+.mside .li:hover{background:var(--ficha)}
+.mside .li.on{background:var(--ficha);border-color:var(--acento);font-weight:700}
+.mside .li em{font-style:normal;flex:1}
+.mside .li i{font-style:normal;font:700 10px/1 Consolas,monospace;color:var(--tinta-3)}
+.mmain{flex:1;min-width:0;display:flex;flex-direction:column;padding:14px 16px;gap:10px;overflow:hidden}
+.mrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.mmain h4{font:800 10px/1.4 "Bahnschrift","Segoe UI",sans-serif;font-stretch:condensed;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--tinta-3)}
+textarea,input.txt{width:100%;background:var(--ficha);border:1.5px solid var(--canto);border-radius:var(--r2);
+  padding:10px 12px;font:13.5px/1.55 Consolas,"Segoe UI",monospace;outline:0;resize:vertical}
+textarea:focus,input.txt:focus{border-color:var(--acento)}
+textarea{height:86px}
+.wlist{flex:1;overflow-y:auto;border:1px solid var(--canto);border-radius:var(--r2);background:var(--ficha);padding:8px}
+.wchip{display:inline-flex;align-items:baseline;gap:7px;margin:3px;padding:5px 9px;border-radius:var(--r1);
+  background:var(--papel);border:1px solid var(--canto-2);font-size:13px;cursor:pointer}
+.wchip:hover{border-color:var(--acento)}
+.wchip u{text-decoration:none;font:800 8.5px/1 "Bahnschrift","Segoe UI",sans-serif;font-stretch:condensed;
+  letter-spacing:.08em;text-transform:uppercase;padding:2px 5px;border-radius:3px;
+  background:color-mix(in srgb,var(--acento) 15%,transparent);color:var(--acento)}
+.wchip em{font-style:normal;color:var(--tinta-3);font-size:11px}
+.wchip.mk{background:color-mix(in srgb,var(--lapiz) 14%,transparent);border-color:var(--lapiz);
+  text-decoration:line-through}
+.msg{font-size:12.5px;padding:8px 12px;border-radius:var(--r2);
+  background:color-mix(in srgb,var(--acento) 11%,transparent);color:var(--acento)}
+.msg.err{background:color-mix(in srgb,var(--lapiz) 13%,transparent);color:var(--lapiz)}
+.msg:empty{display:none}
+.dup{font-size:12.5px;line-height:1.9;color:var(--tinta-2)}
+.dup b{color:var(--lapiz)}
+.radio{display:inline-flex;border:1px solid var(--canto);border-radius:var(--r1);overflow:hidden}
+.radio button{border:0;background:var(--ficha);padding:7px 13px;cursor:pointer;
+  font:700 12px/1 "Bahnschrift","Segoe UI",sans-serif;font-stretch:condensed;letter-spacing:.06em;
+  color:var(--tinta-2)}
+.radio button:hover{color:var(--tinta)}
+.radio button.on{background:var(--acento);color:#fff}
+
+/* ─────────── aviso ─────────── */
+.toast{
+  position:fixed;left:50%;bottom:54px;transform:translate(-50%,20px);
+  background:var(--tinta);color:var(--papel);padding:11px 20px;border-radius:var(--r2);
+  font:700 13.5px/1 "Segoe UI",sans-serif;opacity:0;pointer-events:none;transition:.18s;z-index:40;
+  box-shadow:var(--sombra-alta);
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media(max-width:1000px){.stat,.sep,.spiral{display:none}}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+  .w.done .t::after{width:calc(100% + 6px)}
+}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="langbar">
+    <div class="langs">
+      <button class="lang" data-lang="esp" title="Español de España (Tab para cambiar)">
+        <span class="flag"><svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#c60b1e"/><rect y="5" width="30" height="10" fill="#ffc400"/></svg></span>
+        <span class="txt"><b>ESPAÑA</b><i id="nEs">0</i></span></button>
+      <button class="lang" data-lang="en" title="Inglés (Tab para cambiar)">
+        <span class="flag"><svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#012169"/><path d="M0 0l30 20M30 0L0 20" stroke="#fff" stroke-width="4.5"/><path d="M0 0l30 20M30 0L0 20" stroke="#c8102e" stroke-width="2.2"/><path d="M15 0v20M0 10h30" stroke="#fff" stroke-width="6.5"/><path d="M15 0v20M0 10h30" stroke="#c8102e" stroke-width="3.8"/></svg></span>
+        <span class="txt"><b>ENGLISH</b><i id="nEn">0</i></span></button>
+      <button class="lang" data-lang="mx" title="Español de Latinoamérica / México (Tab para cambiar)">
+        <span class="flag"><svg viewBox="0 0 30 20"><rect width="10" height="20" fill="#006847"/><rect x="10" width="10" height="20" fill="#fff"/><rect x="20" width="10" height="20" fill="#ce1126"/><circle cx="15" cy="10" r="3.1" fill="none" stroke="#8c6239" stroke-width="1.5"/></svg></span>
+        <span class="txt"><b>LATINO</b><i id="nMx">0</i></span></button>
+      <button class="lang" data-lang="pauli" title="Piropos para Pauli (Alt+P)">
+        <span class="flag"><svg viewBox="0 0 30 20"><defs><linearGradient id="gp" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8fc0"/><stop offset="1" stop-color="#c2185b"/></linearGradient></defs><rect width="30" height="20" fill="url(#gp)"/><path d="M15 16.5C9.5 12.8 7 10.6 7 8.2 7 6.4 8.4 5 10.2 5c1.1 0 2.1.5 2.8 1.3l2 2.2 2-2.2C17.7 5.5 18.7 5 19.8 5 21.6 5 23 6.4 23 8.2c0 2.4-2.5 4.6-8 8.3z" fill="#fff" opacity=".95"/></svg></span>
+        <span class="txt"><b>PAULI</b><i id="nPauli">0</i></span></button>
+    </div>
+
+    <div class="grow"></div>
+
+    <div class="timer off" id="timer" title="Cronómetro del turno · clic para reiniciar">
+      <svg width="44" height="44"><circle class="bg" cx="22" cy="22" r="18" fill="none" stroke-width="4"/>
+      <circle class="fg" id="ring" cx="22" cy="22" r="18" fill="none" stroke-width="4" stroke-linecap="round"
+              stroke-dasharray="113.1" stroke-dashoffset="0"/></svg><b id="tnum">12</b>
+    </div>
+    <div class="stat a"><b id="sVis">0</b><i>visibles</i></div>
+    <div class="stat p"><b id="sDone">0</b><i>tachadas</i></div>
+    <div class="stat"><b id="sLeft">0</b><i>quedan</i></div>
+    <div class="sep"></div>
+    <button class="tbtn" id="bChain" title="Alt+C — modo cadena: al tachar salta a la letra final">⛓</button>
+    <button class="tbtn" id="bHide"  title="Alt+O — ocultar / mostrar las tachadas">👁</button>
+    <button class="tbtn" id="bFav"   title="Alt+F — ver solo favoritas (clic derecho marca una)">★</button>
+    <button class="tbtn" id="bTrad"  title="Alt+T — buscar también dentro de la traducción">🔁</button>
+    <select class="tbtn" id="sort" title="Orden">
+      <option value="def">orden lista</option>
+      <option value="len">más cortas</option>
+      <option value="lenz">más largas</option>
+      <option value="abc">A → Z</option>
+    </select>
+    <div class="sep"></div>
+    <button class="tbtn" id="bHist"  title="Alt+H — historial de la partida">🕘</button>
+    <button class="tbtn" id="bAdmin" title="Alt+A — agregar y borrar palabras">⚙</button>
+    <button class="tbtn" id="bTheme" title="Alt+D — modo noche">🌙</button>
+    <button class="tbtn warn" id="bReset" title="Destachar todo y empezar de nuevo">↺</button>
+  </div>
+
+  <div class="searchrow">
+    <div class="sbox">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      <input id="q" autocomplete="off" spellcheck="false" placeholder="escribe y busca al instante…">
+      <div class="badge" id="badge"></div>
+    </div>
+    <div class="seg" id="modes">
+      <button data-mode="start">empieza<kbd>alt+1</kbd></button>
+      <button data-mode="end">termina<kbd>alt+2</kbd></button>
+      <button data-mode="has">contiene<kbd>alt+3</kbd></button>
+    </div>
+  </div>
+
+  <div class="abc" id="abc"></div>
+</div>
+
+<div class="sheetwrap">
+  <div class="spiral"></div>
+  <main id="sheet"></main>
+</div>
+
+<div class="bottom">
+  <span><kbd>Tab</kbd> idioma · <kbd>Enter</kbd> tacha la 1ª · <kbd>↑↓←→</kbd> mover · <kbd>Ctrl</kbd>+<kbd>Z</kbd> deshacer ·
+  <kbd>Esc</kbd> limpiar · <kbd>ly*</kbd> empieza · <kbd>*ly</kbd> termina · clic = tachar · <kbd>×</kbd> = restaurar ·
+  clic derecho = ★ &nbsp;|&nbsp; ⛓ cadena · 👁 ocultar tachadas · ★ favoritas · 🔁 buscar traducción · 🕘 historial · ⚙ editar palabras · ↺ nueva partida</span>
+  <div class="grow"></div><span id="perf"></span>
+</div>
+
+<div class="drawer" id="drawer">
+  <div class="dhead"><h3 class="hand">Historial</h3>
+    <button class="tbtn" id="bCopy">copiar</button><button class="tbtn" id="bCloseD">✕</button></div>
+  <div class="dlist" id="dlist"></div>
+</div>
+
+<div class="mask" id="mask">
+ <div class="modal">
+  <div class="mhead">
+    <h2 class="hand">Administrar palabras</h2>
+    <button class="tbtn" id="bNewList">+ Nueva lista</button>
+    <button class="tbtn" id="bDupes">Duplicadas</button>
+    <button class="tbtn" id="bExport">Exportar copia</button>
+    <button class="tbtn" id="bCloseM">✕ Cerrar</button>
+  </div>
+  <div class="mbody">
+    <div class="mside" id="mside"></div>
+    <div class="mmain"><div id="mpanel"></div></div>
+  </div>
+ </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const DATA = __DATA__;
+const KEY = "conecta.v3";
+const CAP = 420;
+
+/* ================= estado ================= */
+let cats=[], words=[], pre=null, suf=null, preT=null;
+let lang    = localStorage.getItem(KEY+".lang") || "mx";
+if(!["esp","en","mx","pauli"].includes(lang)) lang="mx";
+let mode    = localStorage.getItem(KEY+".mode") || "start";
+let sortBy  = localStorage.getItem(KEY+".sort") || "def";
+let hideDone= localStorage.getItem(KEY+".hide")==="1";
+let chain   = localStorage.getItem(KEY+".chain")==="1";
+let trad    = localStorage.getItem(KEY+".trad2")==="1";   // por defecto: buscar SOLO la palabra
+let curCat  = localStorage.getItem(KEY+".cat") || "letra-a";
+let onlyFav=false, sel=0, view=[], showAll=false, hist=[];
+
+const $=s=>document.querySelector(s);
+const sheet=$("#sheet"), q=$("#q");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function ingest(lists){
+  cats = lists.map(c=>({...c}));
+  words=[];
+  cats.forEach((c,ci)=>c.words.forEach(o=>words.push({
+    w:o.w, l:o.w.toLowerCase(), t:o.t||"", tl:(o.t||"").toLowerCase(),
+    lang:o.lang||"en", c:ci, done:false, fav:false
+  })));
+  buildIndex(); loadState();
+}
+function push(map,k,i){ let a=map.get(k); if(!a)map.set(k,a=[]); a.push(i); }
+function buildIndex(){
+  pre=new Map(); suf=new Map(); preT=new Map();
+  for(let i=0;i<words.length;i++){
+    const l=words[i].l, n=Math.min(4,l.length);
+    for(let k=1;k<=n;k++){ push(pre,l.slice(0,k),i); push(suf,l.slice(l.length-k),i); }
+    const t=words[i].tl;
+    if(t){ const m=Math.min(4,t.length); for(let k=1;k<=m;k++) push(preT,t.slice(0,k),i); }
+  }
+}
+const tag=o=>cats[o.c].id+"|"+o.lang+"|"+o.l;
+// es = español común · esp = solo España · mx = solo Latinoamérica · en = inglés
+// 🇪🇸 ESPAÑA = SOLO palabras exclusivas de España (dialecto)
+// 🇲🇽 LATINO = todo el español (común + latinoamericanismos)
+const vis = o => lang==="en"    ? o.lang==="en"
+              : lang==="esp"   ? o.lang==="esp"
+              : lang==="pauli" ? o.lang==="pauli"
+              :                  (o.lang==="es"||o.lang==="mx");
+function loadState(){
+  try{
+    const st=JSON.parse(localStorage.getItem(KEY)||"{}");
+    const d=new Set(st.done||[]), f=new Set(st.fav||[]);
+    words.forEach(o=>{o.done=d.has(tag(o));o.fav=f.has(tag(o));});
+    const pos=new Map(); words.forEach((o,i)=>pos.set(tag(o),i));
+    hist=(st.hist||[]).filter(t=>pos.has(t)).map(t=>pos.get(t));
+  }catch(e){}
+}
+let saveT;
+function save(){
+  clearTimeout(saveT);
+  saveT=setTimeout(()=>localStorage.setItem(KEY,JSON.stringify({
+    done:words.filter(o=>o.done).map(tag), fav:words.filter(o=>o.fav).map(tag),
+    hist:hist.map(i=>tag(words[i]))
+  })),120);
+}
+
+/* ================= búsqueda ================= */
+function parse(){
+  let s=q.value.trim().toLowerCase().replace(/\s+/g,""), m=mode;
+  if(s.length>1&&s[0]==="*"){m="end";s=s.slice(1);}
+  else if(s.length>1&&s.endsWith("*")){m="start";s=s.slice(0,-1);}
+  return {s:s.replace(/\*/g,""),m};
+}
+function bucket(map,s,test){
+  const k=s.length<=4?s:s.slice(0,4);
+  const arr=map.get(k); if(!arr) return [];
+  return s.length<=4?arr:arr.filter(test);
+}
+function collect(s,m){
+  const res=[], mark=new Uint8Array(words.length);
+  const ok=i=>{
+    if(mark[i])return; const o=words[i];
+    if(!vis(o))return;
+    if(curCat!=="all" && cats[o.c].id!==curCat)return;
+    if(hideDone&&o.done)return;
+    if(onlyFav&&!o.fav)return;
+    mark[i]=1; res.push(i);
+  };
+  if(!s){ for(let i=0;i<words.length;i++) ok(i); return res; }
+  if(m==="start"){
+    for(const i of bucket(pre,s,i=>words[i].l.startsWith(s))) ok(i);
+    if(trad) for(const i of bucket(preT,s,i=>words[i].tl.startsWith(s))) ok(i);
+  }else if(m==="end"){
+    const k=s.length<=4?s:s.slice(-4), arr=suf.get(k)||[];
+    for(const i of (s.length<=4?arr:arr.filter(i=>words[i].l.endsWith(s)))) ok(i);
+    if(trad) for(let i=0;i<words.length;i++) if(words[i].tl.endsWith(s)) ok(i);
+  }else{
+    for(let i=0;i<words.length;i++){
+      const o=words[i];
+      if(o.l.includes(s)||(trad&&o.tl.includes(s))) ok(i);
+    }
+  }
+  return res;
+}
+function cmp(a,b){
+  const A=words[a],B=words[b];
+  return A.c-B.c || (A.done?1:0)-(B.done?1:0)
+      || (sortBy==="len"?A.l.length-B.l.length:sortBy==="lenz"?B.l.length-A.l.length:0)
+      || (sortBy==="def"?a-b:(A.l<B.l?-1:A.l>B.l?1:0));
+}
+function compute(){
+  const t0=performance.now(); const {s,m}=parse();
+  let r=collect(s,m), used=m;
+  if(s&&!r.length&&m!=="has"){ r=collect(s,"has"); used="has"; }
+  r.sort(cmp);                       // las tachadas siempre al final de su letra
+  return {r,s,used,ms:performance.now()-t0};
+}
+
+/* ================= render ================= */
+function hl(txt,low,s,m){
+  if(!s) return esc(txt);
+  const k = m==="end"?low.length-s.length : m==="start"?(low.startsWith(s)?0:-1) : low.indexOf(s);
+  if(k<0||low.slice(k,k+s.length)!==s) return esc(txt);
+  return esc(txt.slice(0,k))+"<mark>"+esc(txt.slice(k,k+s.length))+"</mark>"+esc(txt.slice(k+s.length));
+}
+function render(){
+  const {r,s,used,ms}=compute();
+  // se dibujan las primeras CAP + TODAS las tachadas (para poder restaurarlas siempre)
+  view = (showAll||r.length<=CAP) ? r
+       : r.slice(0,CAP).concat(r.slice(CAP).filter(i=>words[i].done)).sort(cmp);
+  if(sel>=view.length) sel=0;
+  const t0=performance.now();
+  const lim=view.length;
+  const counts={}; r.forEach(i=>counts[words[i].c]=(counts[words[i].c]||0)+1);
+
+  let h="",cur=-1,open=false,sepDone=false;
+  for(let n=0;n<lim;n++){
+    const i=view[n],o=words[i];
+    if(o.c!==cur){
+      if(open)h+="</div></section>";
+      cur=o.c;open=true;sepDone=false;
+      h+='<section class="group"><div class="ghead"><h2 class="hand">'+esc(cats[cur].label)+
+         '</h2><span class="cnt">'+counts[cur]+" palabras</span></div><div class=words>";
+    }
+    if(o.done&&!sepDone){ h+='<span class="donesep">ya tachadas</span>'; sepDone=true; }
+    h+='<span class="w'+(o.done?" done":"")+(o.fav?" fav":"")+(n===sel?" sel":"")+'" data-n="'+n+'">'+
+       '<span class="t">'+hl(o.w,o.l,s,used)+"</span>"+
+       (o.t?'<em>'+hl(o.t,o.tl,trad?s:"",used)+"</em>":"")+
+       '<button class=x data-x='+n+' title=restaurar>&times;</button></span>';
+  }
+  if(open)h+="</div></section>";
+  if(!r.length) h='<div class="empty"><b>sin resultados</b>'+
+      (q.value.trim()?"para “"+esc(q.value.trim())+"”":"en esta letra")+
+      '<br><small>prueba otro modo (alt+1/2/3), otra letra, u otro idioma</small></div>';
+  else if(lim<r.length) h+='<p class="more">mostrando '+lim+" de "+r.length+' · <button id="bAll">ver todas</button></p>';
+  sheet.innerHTML=h;
+  const b=$("#bAll"); if(b)b.onclick=()=>{showAll=true;render();};
+
+  let done=0,total=0,cEs=0,cEn=0,cMx=0,cPa=0;
+  for(const o of words){
+    if(o.lang==="en")cEn++; else if(o.lang==="esp")cEs++;
+    else if(o.lang==="pauli")cPa++; else cMx++;
+    if(vis(o)){ total++; if(o.done)done++; } }
+  $("#sVis").textContent=r.length; $("#sDone").textContent=done; $("#sLeft").textContent=total-done;
+  $("#nEs").textContent=cEs.toLocaleString("es")+" PALABRAS";
+  $("#nEn").textContent=cEn.toLocaleString("es")+" WORDS";
+  $("#nMx").textContent=cMx.toLocaleString("es")+" PALABRAS";
+  $("#nPauli").textContent=cPa.toLocaleString("es")+" PIROPOS";
+  $("#perf").textContent="búsqueda "+ms.toFixed(1)+" ms · dibujo "+(performance.now()-t0).toFixed(1)+" ms · "+words.length+" palabras cargadas";
+  renderAbc();
+  const e=sheet.querySelector(".w.sel"); if(e)e.scrollIntoView({block:"nearest"});
+}
+function renderAbc(){
+  const left={},tot={};
+  for(const o of words){ if(!vis(o))continue;
+    const id=cats[o.c].id; tot[id]=(tot[id]||0)+1; if(!o.done)left[id]=(left[id]||0)+1; }
+  const L=cats.filter(c=>c.kind==="letra");
+  const S=cats.filter(c=>c.kind!=="letra"&&tot[c.id]);   // listas especiales: solo si tienen palabras del idioma actual
+  const btn=c=>'<div class="ltr'+(c.kind!=="letra"?" sp":"")+(curCat===c.id?" on":"")+
+      (!tot[c.id]?" off":"")+'" data-c="'+c.id+'" title="'+esc(c.label)+'"><b>'+esc(c.short)+"</b>"+
+      (tot[c.id]?'<em>'+(left[c.id]||0)+"</em>":"")+"</div>";
+  const totLeft=Object.values(left).reduce((a,b)=>a+b,0);
+  let h='<div class="ltr all'+(curCat==="all"?" on":"")+'" data-c="all"><b>TODAS</b><em>'+
+        totLeft+'</em></div><div class="abcsep"></div>';
+  h+=L.map(btn).join("");
+  if(S.length) h+='<div class="abcsep"></div>'+S.map(btn).join("");
+  $("#abc").innerHTML=h;
+}
+let raf=null;
+const rerender=()=>{ if(document.hidden){render();return;}
+  if(raf)cancelAnimationFrame(raf); raf=requestAnimationFrame(()=>{raf=null;render();}); };
+
+/* ================= acciones ================= */
+function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("show");
+  clearTimeout(toast._t);toast._t=setTimeout(()=>e.classList.remove("show"),1200);}
+
+function mark(n){
+  const i=view[n]; if(i==null)return; const o=words[i];
+  if(o.done)return;
+  o.done=true; hist.push(i); save(); startTimer();
+  if(chain){
+    const c=o.w.trim().slice(-1).toLowerCase();
+    const t=cats.find(x=>x.kind==="letra"&&x.key===c);
+    if(t){ curCat=t.id; localStorage.setItem(KEY+".cat",curCat);
+           $("#badge").textContent="cadena → "+c.toUpperCase(); $("#badge").classList.add("show"); }
+    q.value=""; showAll=false;
+  }
+  sel=0; rerender(); renderHist();
+}
+function unmark(i){
+  const o=words[i]; if(!o||!o.done)return;
+  o.done=false; const k=hist.lastIndexOf(i); if(k>=0)hist.splice(k,1);
+  save(); rerender(); renderHist();
+}
+sheet.addEventListener("click",e=>{
+  const x=e.target.closest("[data-x]");
+  if(x){e.stopPropagation();unmark(view[+x.dataset.x]);return;}
+  const w=e.target.closest(".w"); if(!w)return;
+  const n=+w.dataset.n; if(!words[view[n]].done){sel=n;mark(n);}
+});
+sheet.addEventListener("contextmenu",e=>{
+  const w=e.target.closest(".w"); if(!w)return; e.preventDefault();
+  const o=words[view[+w.dataset.n]]; o.fav=!o.fav; save(); rerender();
+  toast(o.fav?"★ favorita: "+o.w:"quitada de favoritas");
+});
+q.addEventListener("input",()=>{sel=0;showAll=false;rerender();});
+
+function paintSel(){
+  const p=sheet.querySelector(".w.sel"); if(p)p.classList.remove("sel");
+  const n=sheet.querySelector('.w[data-n="'+sel+'"]');
+  if(n){n.classList.add("sel");n.scrollIntoView({block:"nearest"});}
+}
+function moveV(dir){
+  const cur=sheet.querySelector(".w.sel"); if(!cur)return;
+  const r=cur.getBoundingClientRect(); let best=-1,bd=1e9;
+  for(const el of sheet.querySelectorAll(".w")){
+    const b=el.getBoundingClientRect();
+    if(dir>0? b.top<=r.top+2 : b.top>=r.top-2) continue;
+    const d=Math.abs(b.top-r.top)*3+Math.abs(b.left-r.left);
+    if(d<bd){bd=d;best=+el.dataset.n;}
+  }
+  if(best>=0){sel=best;paintSel();}
+}
+addEventListener("keydown",e=>{
+  if($("#mask").classList.contains("open")){ if(e.key==="Escape")closeAdmin(); return; }
+  if(e.ctrlKey&&e.key.toLowerCase()==="z"){e.preventDefault();
+    const i=hist.pop(); if(i!=null){words[i].done=false;save();rerender();renderHist();toast("restaurado: "+words[i].w);} return;}
+  if(e.altKey){
+    const k=e.key.toLowerCase(), m={"1":"start","2":"end","3":"has"}[e.key];
+    if(m){e.preventDefault();setMode(m);return;}
+    const map={a:openAdmin,h:()=>$("#bHist").click(),c:()=>$("#bChain").click(),
+               o:()=>$("#bHide").click(),f:()=>$("#bFav").click(),d:()=>$("#bTheme").click(),
+               t:()=>$("#bTrad").click(),e:()=>setLang("en"),s:()=>setLang("esp"),m:()=>setLang("mx"),p:()=>setLang("pauli")};
+    if(map[k]){e.preventDefault();map[k]();}
+    return;
+  }
+  switch(e.key){
+    case "Tab": e.preventDefault();
+      setLang(CICLO[(CICLO.indexOf(lang)+(e.shiftKey?CICLO.length-1:1))%CICLO.length]); return;
+    case "Escape": q.value="";sel=0;showAll=false;$("#badge").classList.remove("show");rerender();q.focus();return;
+    case "Enter": e.preventDefault();
+      if(view.length){const o=words[view[sel]];mark(sel);toast("tachada: "+o.w);
+        if(!chain&&q.value){q.value="";sel=0;rerender();}}
+      return;
+    case "ArrowRight": e.preventDefault(); if(sel<view.length-1){sel++;paintSel();} return;
+    case "ArrowLeft":  e.preventDefault(); if(sel>0){sel--;paintSel();} return;
+    case "ArrowDown":  e.preventDefault(); moveV(1); return;
+    case "ArrowUp":    e.preventDefault(); moveV(-1); return;
+  }
+  if(document.activeElement!==q&&e.key.length===1&&!e.ctrlKey)q.focus();
+});
+addEventListener("mousedown",e=>{
+  if(!e.target.closest("button,select,input,textarea,.w,.ltr,.modal,.drawer,.lang")) setTimeout(()=>q.focus(),0);
+});
+
+/* ================= controles ================= */
+function setLang(L){
+  lang=L; localStorage.setItem(KEY+".lang",L);
+  document.documentElement.dataset.lang=L;
+  document.querySelectorAll(".lang").forEach(b=>b.classList.toggle("on",b.dataset.lang===L));
+  sel=0;showAll=false;rerender();q.focus();
+}
+document.querySelectorAll(".lang").forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
+const CICLO=["esp","en","mx","pauli"];
+
+function setMode(m){
+  mode=m; localStorage.setItem(KEY+".mode",m);
+  document.querySelectorAll("[data-mode]").forEach(b=>b.classList.toggle("on",b.dataset.mode===m));
+  sel=0;showAll=false;rerender();q.focus();
+}
+document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
+
+$("#abc").addEventListener("click",e=>{
+  const t=e.target.closest("[data-c]"); if(!t)return;
+  curCat=t.dataset.c; localStorage.setItem(KEY+".cat",curCat);
+  sel=0;showAll=false;$("#badge").classList.remove("show");rerender();q.focus();
+});
+function tog(b,v,on,off){b.classList.toggle("on",v);b.textContent=v?on:off;}
+$("#bHide").onclick=()=>{hideDone=!hideDone;localStorage.setItem(KEY+".hide",hideDone?"1":"0");
+  tog($("#bHide"),hideDone,"👁̶","👁");sel=0;rerender();q.focus();};
+$("#bChain").onclick=()=>{chain=!chain;localStorage.setItem(KEY+".chain",chain?"1":"0");
+  $("#bChain").classList.toggle("on",chain); if(!chain)$("#badge").classList.remove("show");
+  toast(chain?"cadena ON: al tachar salto a la letra final":"cadena OFF");q.focus();};
+$("#bFav").onclick=()=>{onlyFav=!onlyFav;$("#bFav").classList.toggle("on",onlyFav);sel=0;rerender();q.focus();};
+$("#bTrad").onclick=()=>{trad=!trad;localStorage.setItem(KEY+".trad2",trad?"1":"0");
+  $("#bTrad").classList.toggle("on",trad);
+  toast(trad?"busco también dentro de la traducción":"busco solo la palabra");sel=0;rerender();q.focus();};
+$("#sort").onchange=e=>{sortBy=e.target.value;localStorage.setItem(KEY+".sort",sortBy);sel=0;rerender();q.focus();};
+$("#bTheme").onclick=()=>{const d=document.documentElement.classList.toggle("dark");
+  localStorage.setItem(KEY+".dark",d?"1":"0");$("#bTheme").textContent=d?"☀":"🌙";q.focus();};
+$("#bReset").onclick=()=>{
+  if(!confirm("¿Destachar TODAS las palabras y vaciar el historial?\n(las listas no se tocan)"))return;
+  words.forEach(o=>o.done=false);hist=[];save();rerender();renderHist();toast("cuadernillo limpio");q.focus();};
+
+$("#bHist").onclick=()=>{const d=$("#drawer").classList.toggle("open");$("#bHist").classList.toggle("on",d);renderHist();};
+$("#bCloseD").onclick=()=>{$("#drawer").classList.remove("open");$("#bHist").classList.remove("on");};
+$("#bCopy").onclick=()=>{navigator.clipboard.writeText(hist.map(i=>words[i].w).join(", "));toast("historial copiado");};
+function renderHist(){
+  $("#dlist").innerHTML=hist.length
+    ? hist.map((i,k)=>'<div class="hitem"><i>'+(k+1)+'</i><span>'+esc(words[i].w)+
+      '</span><button data-h="'+i+'">&times;</button></div>').reverse().join("")
+    : '<p style="padding:14px;color:var(--ink3);font-size:13px">todavía no tachas nada</p>';
+}
+$("#dlist").addEventListener("click",e=>{const b=e.target.closest("[data-h]");if(b)unmark(+b.dataset.h);});
+
+let tInt=null;
+function startTimer(){
+  $("#timer").classList.remove("off"); clearInterval(tInt);
+  const t0=performance.now();
+  tInt=setInterval(()=>{
+    const left=Math.max(0,12-(performance.now()-t0)/1000);
+    $("#tnum").textContent=Math.ceil(left);
+    $("#ring").style.strokeDashoffset=(113.1*(1-left/12)).toFixed(1);
+    $("#timer").classList.toggle("low",left<=4);
+    if(left<=0){clearInterval(tInt);$("#timer").classList.add("off");}
+  },80);
+}
+$("#timer").onclick=startTimer;
+
+/* ================= ADMIN ================= */
+let cur=0, delSet=new Set(), wfilter="", addLang="es", listLang="all";
+const api=(u,b)=>fetch(u,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(b||{})})
+  .then(r=>r.json()).then(j=>{if(j.error)throw new Error(j.error);return j;});
+
+function openAdmin(){
+  cur=Math.max(0,cats.findIndex(c=>c.id===curCat)); if(cur<0)cur=0;
+  addLang=lang; delSet.clear(); wfilter="";
+  $("#mask").classList.add("open"); adminSide(); adminPanel();
+}
+function closeAdmin(){$("#mask").classList.remove("open");rerender();q.focus();}
+$("#bAdmin").onclick=openAdmin; $("#bCloseM").onclick=closeAdmin;
+$("#mask").addEventListener("mousedown",e=>{if(e.target.id==="mask")closeAdmin();});
+
+function adminSide(){
+  const row=(c,i)=>{
+    const n=l=>c.words.filter(w=>w.lang===l).length;
+    const es=n("esp"), mx=n("es")+n("mx"), en=n("en");
+    return '<div class="li '+(i===cur?"on":"")+'" data-i="'+i+'"><em>'+esc(c.label)+
+           '</em><i title="España / Latino / Inglés">'+es+"·"+mx+"·"+en+"</i></div>";
+  };
+  let h='<h5>Letras</h5>';
+  cats.forEach((c,i)=>{ if(c.kind==="letra") h+=row(c,i); });
+  h+='<h5>Listas especiales</h5>';
+  cats.forEach((c,i)=>{ if(c.kind!=="letra") h+=row(c,i); });
+  $("#mside").innerHTML=h;
+}
+$("#mside").addEventListener("click",e=>{const l=e.target.closest("[data-i]");if(!l)return;
+  cur=+l.dataset.i;delSet.clear();wfilter="";adminSide();adminPanel();});
+
+function adminPanel(){
+  const c=cats[cur], isL=c.kind==="letra";
+  const nn=l=>c.words.filter(w=>w.lang===l).length;
+  const es=nn("esp");
+  $("#mpanel").outerHTML=
+  '<div id="mpanel" style="display:flex;flex-direction:column;gap:9px;flex:1;min-height:0">'+
+    '<div class="mrow"><h4 style="flex:1;font-size:15px;text-transform:none;letter-spacing:0;color:var(--ink)">'+
+      esc(c.label)+' <span style="color:var(--ink3);font-weight:400">· '+es+' 🇪🇸 · '+(nn("es")+nn("mx"))+' 🇲🇽 · '+nn("en")+' 🇬🇧</span></h4>'+
+      '<button class="tbtn warn" id="bDelList">🗑 eliminar lista</button></div>'+
+
+    '<div><div class="mrow" style="margin-bottom:5px"><h4 style="flex:1">agregar palabras</h4>'+
+      (isL?'<div class="radio" id="rLang">'+
+        '<button data-l="es"  class="'+(addLang==="es" ?"on":"")+'" title="español que vale en España y en Latinoamérica">ESPAÑOL</button>'+
+        '<button data-l="esp" class="'+(addLang==="esp"?"on":"")+'" title="solo España">SOLO 🇪🇸</button>'+
+        '<button data-l="mx"  class="'+(addLang==="mx" ?"on":"")+'" title="solo Latinoamérica / México">SOLO 🇲🇽</button>'+
+        '<button data-l="en"  class="'+(addLang==="en" ?"on":"")+'">ENGLISH</button><button data-l="pauli" class="'+(addLang==="pauli"?"on":"")+'" title="piropos para Pauli">PAULI</button></div>':"")+
+      '</div>'+
+      '<textarea id="ta" placeholder="una por línea:&#10;'+(isL?'manzana = apple&#10;abeja = bee':'lymphoma&#10;lyricist')+'"></textarea>'+
+      '<div class="mrow" style="margin-top:6px"><button class="tbtn on" id="bAdd">➕ Agregar y guardar</button>'+
+      '<span style="font-size:11.5px;color:var(--ink3)">se escribe en el archivo · <kbd>Ctrl</kbd>+<kbd>Enter</kbd></span></div></div>'+
+
+    '<div class="msg" id="amsg"></div>'+
+
+    '<div class="mrow"><h4 style="flex:1">palabras · clic = marcar para borrar · doble clic = editar traducción</h4>'+
+      (isL?'<div class="radio" id="rView">'+
+        '<button data-v="all" class="'+(listLang==="all"?"on":"")+'">todas</button>'+
+        '<button data-v="es"  class="'+(listLang==="es" ?"on":"")+'">es</button>'+
+        '<button data-v="esp" class="'+(listLang==="esp"?"on":"")+'">🇪🇸</button>'+
+        '<button data-v="mx"  class="'+(listLang==="mx" ?"on":"")+'">🇲🇽</button>'+
+        '<button data-v="en"  class="'+(listLang==="en" ?"on":"")+'">en</button><button data-v="pauli" class="'+(listLang==="pauli"?"on":"")+'">pauli</button></div>':"")+
+      '<input class="txt" id="wf" placeholder="filtrar…" value="'+esc(wfilter)+'" style="width:130px;padding:6px 9px;font-size:12.5px">'+
+      '<button class="tbtn warn" id="bDel">🗑 borrar (<span id="dn">'+delSet.size+'</span>)</button></div>'+
+    '<div class="wlist" id="wl"></div></div>';
+
+  $("#bAdd").onclick=doAdd; $("#bDel").onclick=doDel; $("#bDelList").onclick=doDelList;
+  $("#wf").oninput=e=>{wfilter=e.target.value.trim().toLowerCase();adminWords();};
+  $("#ta").addEventListener("keydown",e=>{if(e.ctrlKey&&e.key==="Enter")doAdd();});
+  const rl=$("#rLang"); if(rl)rl.onclick=e=>{const b=e.target.closest("[data-l]");if(!b)return;
+    addLang=b.dataset.l;rl.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));};
+  const rv=$("#rView"); if(rv)rv.onclick=e=>{const b=e.target.closest("[data-v]");if(!b)return;
+    listLang=b.dataset.v;rv.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));adminWords();};
+  adminWords();
+}
+function adminWords(){
+  const c=cats[cur];
+  let list=c.words;
+  if(listLang!=="all") list=list.filter(o=>o.lang===listLang);
+  if(wfilter) list=list.filter(o=>o.w.toLowerCase().includes(wfilter)||(o.t||"").toLowerCase().includes(wfilter));
+  const lim=list.slice(0,700);
+  $("#wl").innerHTML=lim.map(o=>{
+    const k=o.lang+"|"+o.w;
+    return '<span class="wchip'+(delSet.has(k)?" mk":"")+'" data-k="'+esc(k)+'">'+
+      '<u>'+o.lang+"</u>"+esc(o.w)+(o.t?"<em>"+esc(o.t)+"</em>":"")+"</span>";
+  }).join("")+(list.length>lim.length?'<p class="more">…y '+(list.length-lim.length)+" más (usa el filtro)</p>":"");
+  const dn=$("#dn"); if(dn)dn.textContent=delSet.size;
+}
+$("#mask").addEventListener("click",e=>{
+  const ch=e.target.closest(".wchip"); if(!ch)return;
+  const k=ch.dataset.k;
+  if(e.detail>1){                                    // doble clic -> editar traducción
+    const [lg,w]=k.split("|"); const c=cats[cur];
+    const o=c.words.find(x=>x.lang===lg&&x.w===w); if(!o)return;
+    const t=prompt("Traducción de “"+w+"”:",o.t||""); if(t===null)return;
+    api("/api/words/edit",{id:c.id,lang:lg,w,t}).then(j=>{c.words=j.words;refresh();amsg("✔ traducción actualizada");})
+      .catch(er=>amsg(er.message,1));
+    return;
+  }
+  delSet.has(k)?delSet.delete(k):delSet.add(k); adminWords();
+});
+function amsg(t,err){const e=$("#amsg");if(e){e.textContent=t;e.className="msg"+(err?" err":"");}}
+function refresh(){ const id=cats[cur].id; ingest(cats); cur=Math.max(0,cats.findIndex(c=>c.id===id));
+  adminSide(); adminPanel(); rerender(); }
+
+function doAdd(){
+  const c=cats[cur], isL=c.kind==="letra";
+  const raw=$("#ta").value.split(/\n/).map(s=>s.trim()).filter(Boolean);
+  if(!raw.length)return amsg("no escribiste nada",1);
+  const items=[], bad=[];
+  for(const line of raw){
+    const p=line.split(/\s*[=|]\s*/);
+    const w=(p[0]||"").trim().replace(/\s+/g,"");
+    if(!w)continue;
+    items.push({w, t:(p[1]||"").trim(), lang:isL?addLang:"en"});
+    if(isL && w[0].toLowerCase()!==c.key) bad.push(w);
+    if(!isL){
+      const ok = c.kind==="acaban" ? w.toLowerCase().endsWith(c.key) : w.toLowerCase().startsWith(c.key);
+      if(!ok) bad.push(w);
+    }
+  }
+  api("/api/words/add",{id:c.id,words:items}).then(j=>{
+    c.words=j.words; $("#ta").value=""; refresh();
+    let m="✔ "+j.added+" agregadas";
+    if(j.dup)m+=" · "+j.dup+" repetidas ignoradas ("+j.dupList.join(", ")+")";
+    if(bad.length)m+=" · ⚠ no cumplen la regla de la lista: "+bad.join(", ");
+    amsg(m); toast(j.added+" palabras guardadas");
+  }).catch(e=>amsg(e.message,1));
+}
+function doDel(){
+  if(!delSet.size)return amsg("marca palabras primero (clic sobre ellas)",1);
+  const c=cats[cur];
+  const arr=[...delSet].map(k=>{const i=k.indexOf("|");return {lang:k.slice(0,i),w:k.slice(i+1)};});
+  if(!confirm("¿Borrar "+arr.length+" palabra(s) del archivo?\n"+arr.slice(0,15).map(o=>o.w).join(", ")))return;
+  api("/api/words/del",{id:c.id,words:arr}).then(j=>{
+    c.words=j.words; delSet.clear(); refresh();
+    amsg("🗑 "+j.removed+" borradas del archivo"); toast(j.removed+" borradas");
+  }).catch(e=>amsg(e.message,1));
+}
+function doDelList(){
+  const c=cats[cur];
+  if(!confirm("¿Eliminar la lista “"+c.label+"”?\nEl archivo NO se borra: se renombra a _papelera-…"))return;
+  api("/api/lists/del",{id:c.id}).then(j=>{
+    ingest(j.lists); cur=0; if(!cats.some(x=>x.id===curCat))curCat="all";
+    adminSide(); adminPanel(); rerender(); toast("lista eliminada");
+  }).catch(e=>amsg(e.message,1));
+}
+$("#bNewList").onclick=()=>{
+  const t=prompt("Tipo de lista:\n  1 = por letra (bilingüe)\n  2 = palabras que EMPIEZAN con…\n  3 = palabras que ACABAN en…","1");
+  const kind={1:"letra",2:"empiezan",3:"acaban"}[t]; if(!kind)return;
+  const key=prompt(kind==="letra"?"¿Qué letra? (ej: a)":kind==="empiezan"?"¿Con qué empiezan? (ej: qu)":"¿En qué acaban? (ej: ing)");
+  if(!key)return;
+  api("/api/lists/add",{kind,key}).then(j=>{
+    ingest(j.lists); cur=Math.max(0,cats.findIndex(c=>c.id===kind+"-"+key.toLowerCase()));
+    adminSide(); adminPanel(); rerender(); toast("lista creada");
+  }).catch(e=>alert(e.message));
+};
+$("#bExport").onclick=()=>{
+  const blob=new Blob([JSON.stringify(cats.map(c=>({id:c.id,label:c.label,words:c.words})),null,1)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download="conecta-copia-"+new Date().toISOString().slice(0,10)+".json"; a.click(); toast("copia descargada");
+};
+$("#bDupes").onclick=()=>{
+  const map=new Map();
+  words.forEach(o=>{const k=o.lang+"|"+o.l;const a=map.get(k)||[];a.push(cats[o.c].short);map.set(k,a);});
+  const d=[...map].filter(([,a])=>a.length>1);
+  $("#mpanel").outerHTML='<div id="mpanel" style="display:flex;flex-direction:column;gap:9px;flex:1;min-height:0">'+
+    '<h4>palabras repetidas en varias listas — '+d.length+'</h4><div class="wlist dup">'+
+    (d.length?d.map(([k,a])=>"<b>"+esc(k.split("|")[1])+"</b> ("+k.split("|")[0]+") → "+a.join(" , ")).join("<br>"):"ninguna 🎉")+
+    '</div><div><button class="tbtn" onclick="adminPanel()">← volver</button></div></div>';
+};
+
+/* ================= init ================= */
+if(localStorage.getItem(KEY+".dark")==="1"){document.documentElement.classList.add("dark");$("#bTheme").textContent="☀";}
+ingest(DATA);
+if(!cats.some(c=>c.id===curCat)&&curCat!=="all") curCat=(cats[0]||{id:"all"}).id;
+$("#sort").value=sortBy;
+tog($("#bHide"),hideDone,"👁̶","👁");
+$("#bChain").classList.toggle("on",chain);
+$("#bTrad").classList.toggle("on",trad);
+document.querySelectorAll("[data-mode]").forEach(b=>b.classList.toggle("on",b.dataset.mode===mode));
+setLang(lang); render(); renderHist(); q.focus();
+</script>
+</body>
+</html>

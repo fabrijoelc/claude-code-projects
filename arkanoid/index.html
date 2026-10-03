@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arkanoid</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <canvas id="juego" width="512" height="600"></canvas>
+
+  <!-- Mapa de recursos (fuente de verdad para dibujar) -->
+  <script src="assets/spritesheet.js"></script>
+
+  <!-- Modulos del juego (orden de carga: dependencias primero).
+       Se descomentan a medida que se crean en cada paso del plan. -->
+  <script src="js/entidades.js"></script>
+  <script src="js/dibujo.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/juego.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
